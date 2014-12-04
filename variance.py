@@ -127,10 +127,6 @@ def accumulate_list (histo, bin, add_values):
 def associate (dist, date = None):
     print dist/sec, 'arcsec'
     t0 = trees[d0]
-    if date = None:
-	for date in trees:
-	    associate (dist, date)
-	return None, None
 	    
     if date == d0:
 	return None, None
@@ -139,6 +135,7 @@ def associate (dist, date = None):
     mc = {}
 
     t = trees[date]
+
     matches = t0.query_ball_tree (t, dist)
     other = all_sources[date]
     otherf = all_fluxes[date]
@@ -183,6 +180,7 @@ for date in trees:
     dist = distance (4)
     associate (dist, date)
 
+    i = 0
     for s in combined:
 	c = combined[s]
 	if (len(c) < 2) or (len(c) > 2):
@@ -194,7 +192,11 @@ for date in trees:
 	    d = abs(c[i] - c0)/sec
 	    xs.append (d)
 
-        #print s, len (combined[s]), combined[s], fluxes[s]
+        print s, len (c), c, fluxes[s]
+
+	i += 1
+	if i > 10:
+	    break
 
 	x = fluxes[s]
 	y = np.mean (xs)

@@ -124,47 +124,48 @@ def accumulate_list (histo, bin, add_values):
 #
 # return: the distribution of accumulated match counts for all exposures 
 #
-def associate (dist):
+def associate (dist, date = None):
     print dist/sec, 'arcsec'
-    
     t0 = trees[d0]
+    if date = None:
+	for date in trees:
+	    associate (dist, date)
+	return None, None
+	    
+    if date == d0:
+	return None, None
+    
     ms = {}
     mc = {}
-    for date in trees:
-        if date == d0:
-            continue        
-        t = trees[date]
-        matches = t0.query_ball_tree (t, dist)
-        other = all_sources[date]
-        otherf = all_fluxes[date]
-        # there is one match information per source in the reference exposure
-        # each match info is a list (possibly empty) of sources from the other tree
-        for i_source in range(len(matches)):
-            found = matches[i_source]
 
-            # we count associations found for this source of the reference exposure.
-            # one match may associate 0 to N sources from the other exposure
-            # here we accumulate the distribution of number of associations
+    t = trees[date]
+    matches = t0.query_ball_tree (t, dist)
+    other = all_sources[date]
+    otherf = all_fluxes[date]
+    # there is one match information per source in the reference exposure
+    # each match info is a list (possibly empty) of sources from the other tree
+    for i_source in range(len(matches)):
+	found = matches[i_source]
 
-            n_associations = len(found)
-            accumulate_bin (ms, n_associations)
+	# we count associations found for this source of the reference exposure.
+	# one match may associate 0 to N sources from the other exposure
+	# here we accumulate the distribution of number of associations
 
-            coords = []
-            for j_source in found:
-                for coord in other[j_source]:
-                    coords.append (coord)
+	n_associations = len(found)
+	accumulate_bin (ms, n_associations)
 
-            accumulate_list (combined, i_source, coords)
-            accumulate_list (mc, n_associations, coords)
+	coords = []
+	for j_source in found:
+	    for coord in other[j_source]:
+		coords.append (coord)
+
+	accumulate_list (combined, i_source, coords)
+	accumulate_list (mc, n_associations, coords)
 
     return ms, mc
 
 
 #------------------------------------
-
-init_combined ()
-dist = distance (4)
-associate (dist)
 
 i = 0
 
@@ -174,36 +175,44 @@ fig, ax1 = plt.subplots()
 ax1.set_xscale("log")
 #ax1.set_yscale("log")
 
-for s in combined:
-    c = combined[s]
-    if (len(c) < 2) or (len(c) > 2):
-        continue
+for date in trees:
+    if date == d0:
+	continue
+    
+    init_combined ()
+    dist = distance (4)
+    associate (dist, date)
 
-    xs = []
-    c0 = c[0]
-    for i in range (1, len(c)):
-       d = abs(c[i] - c0)/sec
-       xs.append (d)
+    for s in combined:
+	c = combined[s]
+	if (len(c) < 2) or (len(c) > 2):
+	    continue
 
-    #print s, len (combined[s]), combined[s], fluxes[s]
+	xs = []
+	c0 = c[0]
+	for i in range (1, len(c)):
+	    d = abs(c[i] - c0)/sec
+	    xs.append (d)
 
-    x = fluxes[s]
-    y = np.mean (xs)
-    #print s, 'x=', x, 'y=', y
-    i += 1
-    if i > 100:
-        #break
-        pass
-    #continue
+        #print s, len (combined[s]), combined[s], fluxes[s]
 
-    if np.isnan (x):
-        continue
+	x = fluxes[s]
+	y = np.mean (xs)
+        #print s, 'x=', x, 'y=', y
+	i += 1
+	if i > 100:
+            #break
+	    pass
+        #continue
 
-    if y > 0.2:
-        i#continue
-        pass
+	if np.isnan (x):
+	    continue
 
-    ax1.plot (x, y, 'b.')
+	if y > 0.2:
+	    i#continue
+	    pass
+
+	ax1.plot (x, y, 'b.')
 
 #ax1.legend()
 ax1.grid()
