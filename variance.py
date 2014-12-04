@@ -177,7 +177,7 @@ for date in trees:
 	continue
     
     init_combined ()
-    dist = distance (4)
+    dist = distance (8)
     associate (dist, date)
 
     i = 0
