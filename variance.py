@@ -11,6 +11,10 @@ from scipy import spatial
 #where = '/workspace/LSST/data/08AL01/D3'
 where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
 
+def file_pattern (date):
+    #return '%s/r/*00.fits' % date
+    return '%s/r/*.fits' % date
+
 os.chdir(where)
 
 # list of sources: 
@@ -50,10 +54,8 @@ for date in glob.glob('*'):
     ns = 0
     # this is the simple array of coords to build the KDTree
     coords = []
-    #files = '%s/r/*00.fits' % date
-    files = '%s/r/*.fits' % date
 
-    for file in glob.glob(files):
+    for file in glob.glob(file_pattern (date)):
         #print file
         h = pyfits.open (file)
         data = h[1].data
@@ -161,7 +163,7 @@ def associate (dist):
 #------------------------------------
 
 init_combined ()
-dist = distance (6)
+dist = distance (4)
 associate (dist)
 
 i = 0
@@ -174,7 +176,7 @@ ax1.set_xscale("log")
 
 for s in combined:
     c = combined[s]
-    if len(c) < 2:
+    if (len(c) < 2) or (len(c) > 2):
         continue
 
     xs = []
@@ -197,8 +199,13 @@ for s in combined:
     if np.isnan (x):
         continue
 
+    if y > 0.2:
+        i#continue
+        pass
+
     ax1.plot (x, y, 'b.')
 
 #ax1.legend()
 ax1.grid()
 plt.show()
+
