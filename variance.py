@@ -51,7 +51,7 @@ for date in glob.glob('*'):
     # this is the simple array of coords to build the KDTree
     coords = []
     for file in glob.glob('%s/r/*00.fits' % date):
-        print file
+        #print file
         h = pyfits.open (file)
         data = h[1].data
         for row in data:
@@ -171,15 +171,15 @@ ax1.set_yscale("log")
 
 for s in combined:
     #print s, len (combined[s]), combined[s], fluxes[s]
-    print s, len (combined[s]), fluxes[s]
+    #print s, len (combined[s]), fluxes[s]
     i += 1
     if i > 20:
-        break
+        #break
         pass
-    continue
+    #continue
     if not np.isnan (fluxes[s]):
         for r in combined[s]:
-            ax1.plot (np.var(combined[s]), fluxes[s], '.')
+            ax1.plot (np.var(combined[s]), fluxes[s], 'b.')
 
 #ax1.legend()
 ax1.grid()
