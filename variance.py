@@ -71,7 +71,7 @@ for date in glob.glob('*'):
     tree = spatial.KDTree(coords)
     trees[date] = tree
 
-#
+#----------------------------------------
 # select the reference exposure
 #
 d0 = trees.keys()[0]
