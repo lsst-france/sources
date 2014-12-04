@@ -27,13 +27,20 @@ all_sources = {}
 all_fluxes = {}
 trees = {}
 
-dates = 0
-
 def R (coord):
     x = coord[0]
     y = coord[1]
     return (math.sqrt (x*x + y*y))
 
+# arc-seconds from radians
+sec = math.pi/(180*3600)
+
+def distance (step):
+    return step*sec/5.0
+
+#------------------------------------------------------------------
+# start by reading files
+#
 for date in glob.glob('*'):
     print date
     all_sources[date] = {}
@@ -64,11 +71,11 @@ for date in glob.glob('*'):
     tree = spatial.KDTree(coords)
     trees[date] = tree
 
-    dates += 1
-    #if dates > 1:
-    #   break
-
+#
+# select the reference exposure
+#
 d0 = trees.keys()[0]
+fluxes = all_fluxes[d0]
 
 combined = {}
 
@@ -79,15 +86,9 @@ def init_combined ():
     sources = all_sources[d0]
     for ns in sources:
         combined[ns] = sources[ns]
-    
-fluxes = all_fluxes[d0]
 
-# arc-seconds from radians
-sec = math.pi/(180*3600)
-
-def distance (step):
-    return step*sec/5.0
-
+#----------------------------------------
+# 1-D histo
 def accumulate_bin (histo, bin):
     if bin in histo:
         count = histo[bin]
@@ -97,6 +98,8 @@ def accumulate_bin (histo, bin):
 
     histo[bin] = count
 
+#----------------------------------------
+# 1-D histo with list values
 def accumulate_list (histo, bin, add_values):
     if bin in histo:
         values = histo[bin]
@@ -108,7 +111,7 @@ def accumulate_list (histo, bin, add_values):
     histo[bin] = values
 
     
-#
+#-----------------------------------------
 # we associate sources coming from different exposures (each esposure was stored as a KDTree)
 # one exposure is selected as the reference (date=d0)
 #
@@ -153,9 +156,6 @@ def associate (dist):
 
 
 #------------------------------------
-
-#evaluate_kdtree ()
-#variance ()
 
 init_combined ()
 dist = distance (6)
