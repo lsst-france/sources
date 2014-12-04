@@ -11,6 +11,10 @@ from scipy import spatial
 #where = '/workspace/LSST/data/08AL01/D3'
 where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
 
+def file_pattern (date):
+    #return '%s/r/*00.fits' % date
+    return '%s/r/*.fits' % date
+
 os.chdir(where)
 
 # list of sources: 
@@ -50,7 +54,8 @@ for date in glob.glob('*'):
     ns = 0
     # this is the simple array of coords to build the KDTree
     coords = []
-    for file in glob.glob('%s/r/*00.fits' % date):
+
+    for file in glob.glob(file_pattern (date)):
         #print file
         h = pyfits.open (file)
         data = h[1].data
@@ -71,7 +76,7 @@ for date in glob.glob('*'):
     tree = spatial.KDTree(coords)
     trees[date] = tree
 
-#
+#----------------------------------------
 # select the reference exposure
 #
 d0 = trees.keys()[0]
@@ -158,7 +163,7 @@ def associate (dist):
 #------------------------------------
 
 init_combined ()
-dist = distance (6)
+dist = distance (4)
 associate (dist)
 
 i = 0
@@ -167,20 +172,40 @@ fluxes = all_fluxes[d0]
 
 fig, ax1 = plt.subplots()
 ax1.set_xscale("log")
-ax1.set_yscale("log")
+#ax1.set_yscale("log")
 
 for s in combined:
+    c = combined[s]
+    if (len(c) < 2) or (len(c) > 2):
+        continue
+
+    xs = []
+    c0 = c[0]
+    for i in range (1, len(c)):
+       d = abs(c[i] - c0)/sec
+       xs.append (d)
+
     #print s, len (combined[s]), combined[s], fluxes[s]
-    #print s, len (combined[s]), fluxes[s]
+
+    x = fluxes[s]
+    y = np.mean (xs)
+    #print s, 'x=', x, 'y=', y
     i += 1
-    if i > 20:
+    if i > 100:
         #break
         pass
     #continue
-    if not np.isnan (fluxes[s]):
-        for r in combined[s]:
-            ax1.plot (np.var(combined[s]), fluxes[s], 'b.')
+
+    if np.isnan (x):
+        continue
+
+    if y > 0.2:
+        i#continue
+        pass
+
+    ax1.plot (x, y, 'b.')
 
 #ax1.legend()
 ax1.grid()
 plt.show()
+
