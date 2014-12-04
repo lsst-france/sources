@@ -12,8 +12,8 @@ from scipy import spatial
 where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
 
 def file_pattern (date):
-    #return '%s/r/*00.fits' % date
-    return '%s/r/*.fits' % date
+    return '%s/r/*00.fits' % date
+    #return '%s/r/*.fits' % date
 
 os.chdir(where)
 
@@ -183,7 +183,7 @@ for date in trees:
     i = 0
     for s in combined:
 	c = combined[s]
-	if (len(c) < 2) or (len(c) > 2):
+	if (len(c) < 2):
 	    continue
 
 	xs = []
@@ -193,10 +193,6 @@ for date in trees:
 	    xs.append (d)
 
         print s, len (c), c, fluxes[s]
-
-	i += 1
-	if i > 10:
-	    break
 
 	x = fluxes[s]
 	y = np.mean (xs)
