@@ -9,19 +9,28 @@ import math
 from scipy import spatial
 
 where = '/workspace/LSST/data/06AL01/D3'
+where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/06AL01/D3/'
+
 os.chdir(where)
 
 all_sources = {}
 all_fluxes = {}
+trees = None
 
-dates = 0
+dates = None 
+d0 = None
 
 # arc-seconds from radians
 sec = math.pi/(180*3600)
 
 #------------------------------------------------------------------------
 def read_sources ():
+    global dates
+    global all_sources
+    global all_fluxes
+    global trees
 
+    dates = 0
     trees = {}
     for date in glob.glob('*'):
 	print date
@@ -31,8 +40,11 @@ def read_sources ():
 	fluxes = all_fluxes[date]
 	ns = 0
 	coords = []
-	for file in glob.glob('%s/r/*00.fits' % date):
-	    print file
+        images = '%s/r/*00.fits' % date
+        #images = '%s/r/*.fits' % date
+
+	for file in glob.glob(images):
+	    #print file
 	    h = pyfits.open (file)
 	    data = h[1].data
 	    for row in data:
@@ -56,6 +68,7 @@ def read_sources ():
 
 #------------------------------------------------------------------------
 def distance (step):
+    global sec
     return step*sec/5.0
 
 #------------------------------------------------------------------------
@@ -66,6 +79,14 @@ def distance (step):
 # the set of associations is stored into combined
 #
 def associate (dist):
+    global dates
+    global all_sources
+    global all_fluxes
+    global trees
+    global d0
+    global t0
+    global combined
+
     print dist
     ms = {}
     for date in trees:
@@ -101,8 +122,13 @@ def associate (dist):
 
 #------------------------------------------------------------------------
 def evaluate_kdtree ():
-    d0 = trees.keys()[0]
-    t0 = trees[d0]
+    global dates
+    global all_sources
+    global all_fluxes
+    global trees
+    global d0
+    global t0
+    global combined
 
     # we select one of the dates to be the reference data -> the reference tree
     # each exposure is stored 
@@ -186,8 +212,13 @@ def evaluate_kdtree ():
 
 #------------------------------------------------------------------------
 def variance ():
-    d0 = trees.keys()[0]
-    t0 = trees[d0]
+    global dates
+    global all_sources
+    global all_fluxes
+    global trees
+    global d0
+    global t0
+    global combined
 
     fluxes = all_fluxes[d0]
     #print fluxes
@@ -217,10 +248,73 @@ def variance ():
 	    rs.append (r)
 	rv = np.var (rs)
 	ax1.plot(flux, rv, 'b.')
-	plt.show()
+    plot.show()
+
+def distrib ():
+    global dates
+    global all_sources
+    global all_fluxes
+    global trees
+    global d0
+    global t0
+    global combined
+
+    combined = {}
+    sources = all_sources[d0]
+    for ns in sources:
+        combined[ns] = sources[ns]
+    
+    sec = math.pi/(180*3600)
+    dist = 6*sec/5.0
+    associate (dist)
+
+    colors = 'rgbyc' * 10
+    
+    fig, ax1 = plt.subplots()
+
+    k = {}
+    for s in combined:
+        associations = combined[s]
+        #print associations
+    
+        n = len(associations)
+        
+        if n == 0:
+            continue
+        if n > len(colors):
+            continue
+    
+        coords = associations[0]
+        ra = coords[0]
+        dec = coords[1]
+    
+        c = n-1
+        #if c != 2:
+        #    continue
+        if c in k:
+            sum = k[c]
+        else:
+            sum = 0
+        sum += 1
+        k[c] = sum
+        
+        #ax1.plot(ra, dec, colors[c] + '.', label='%d' % c)
+        ax1.plot(ra, dec, colors[c] + '.')
+
+    print k
+    #ax1.legend()
+    ax1.grid()
+    plt.show()
+
 
 #------------------------------------
 
 read_sources ()
+
+d0 = trees.keys()[0]
+t0 = trees[d0]
+
 evaluate_kdtree ()
-variance ()
+#variance ()
+distrib()
+
