@@ -171,12 +171,12 @@ ax1.set_yscale("log")
 
 for s in combined:
     #print s, len (combined[s]), combined[s], fluxes[s]
-    #print s, len (combined[s]), fluxes[s]
+    print s, np.mean (combined[s]), fluxes[s]
     i += 1
     if i > 20:
-        #break
+        break
         pass
-    #continue
+    continue
     if not np.isnan (fluxes[s]):
 	ax1.plot (np.mean(combined[s]), fluxes[s], 'b.')
 
