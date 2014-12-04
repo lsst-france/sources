@@ -99,6 +99,7 @@ def associate (dist):
     return ms
 
 
+#------------------------------------------------------------------------
 def evaluate_kdtree ():
     d0 = trees.keys()[0]
     t0 = trees[d0]
@@ -183,6 +184,7 @@ def evaluate_kdtree ():
     plt.show()
 
 
+#------------------------------------------------------------------------
 def variance ():
     d0 = trees.keys()[0]
     t0 = trees[d0]
