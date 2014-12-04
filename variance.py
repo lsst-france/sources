@@ -8,8 +8,8 @@ import os
 import math
 from scipy import spatial
 
-where = '/workspace/LSST/data/08AL01/D3'
-#where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
+#where = '/workspace/LSST/data/08AL01/D3'
+where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
 
 os.chdir(where)
 
@@ -154,6 +154,33 @@ def associate (dist):
 
 #------------------------------------
 
-read_sources ()
 #evaluate_kdtree ()
 #variance ()
+
+init_combined ()
+dist = distance (6)
+associate (dist)
+
+i = 0
+
+fluxes = all_fluxes[d0]
+
+fig, ax1 = plt.subplots()
+ax1.set_xscale("log")
+ax1.set_yscale("log")
+
+for s in combined:
+    #print s, len (combined[s]), combined[s], fluxes[s]
+    print s, len (combined[s]), fluxes[s]
+    i += 1
+    if i > 20:
+        break
+        pass
+    continue
+    if not np.isnan (fluxes[s]):
+        for r in combined[s]:
+            ax1.plot (np.var(combined[s]), fluxes[s], '.')
+
+#ax1.legend()
+ax1.grid()
+plt.show()
