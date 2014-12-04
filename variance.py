@@ -198,16 +198,16 @@ for date in trees:
 	y = np.mean (xs)
         #print s, 'x=', x, 'y=', y
 	i += 1
-	if i > 100:
-            #break
+	if i > 10:
+            break
 	    pass
-        #continue
+        continue
 
 	if np.isnan (x):
 	    continue
 
 	if y > 0.2:
-	    i#continue
+	    #continue
 	    pass
 
 	ax1.plot (x, y, 'b.')
