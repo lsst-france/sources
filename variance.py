@@ -50,7 +50,10 @@ for date in glob.glob('*'):
     ns = 0
     # this is the simple array of coords to build the KDTree
     coords = []
-    for file in glob.glob('%s/r/*00.fits' % date):
+    #files = '%s/r/*00.fits' % date
+    files = '%s/r/*.fits' % date
+
+    for file in glob.glob(files):
         #print file
         h = pyfits.open (file)
         data = h[1].data
@@ -167,18 +170,34 @@ fluxes = all_fluxes[d0]
 
 fig, ax1 = plt.subplots()
 ax1.set_xscale("log")
-ax1.set_yscale("log")
+#ax1.set_yscale("log")
 
 for s in combined:
+    c = combined[s]
+    if len(c) < 2:
+        continue
+
+    xs = []
+    c0 = c[0]
+    for i in range (1, len(c)):
+       d = abs(c[i] - c0)/sec
+       xs.append (d)
+
     #print s, len (combined[s]), combined[s], fluxes[s]
-    print s, np.mean (combined[s]), fluxes[s]
+
+    x = fluxes[s]
+    y = np.mean (xs)
+    #print s, 'x=', x, 'y=', y
     i += 1
-    if i > 20:
-        break
+    if i > 100:
+        #break
         pass
-    continue
-    if not np.isnan (fluxes[s]):
-	ax1.plot (np.mean(combined[s]), fluxes[s], 'b.')
+    #continue
+
+    if np.isnan (x):
+        continue
+
+    ax1.plot (x, y, 'b.')
 
 #ax1.legend()
 ax1.grid()
