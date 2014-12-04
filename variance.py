@@ -196,12 +196,12 @@ for date in trees:
 
 	x = fluxes[s]
 	y = np.mean (xs)
-        print s, 'x=', x, 'y=', y
+        #print s, 'x=', x, 'y=', y
 	i += 1
 	if i > 10:
             break
 	    pass
-        continue
+        #continue
 
 	if np.isnan (x):
 	    continue
