@@ -1,4 +1,3 @@
-
 import pyfits
 import re
 import numpy as np
@@ -9,8 +8,9 @@ import os
 import math
 from scipy import spatial
 
-#where = '/workspace/LSST/data/08AL01/D3'
-where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
+where = '/workspace/LSST/data/08AL01/D3'
+#where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
+
 os.chdir(where)
 
 # list of sources: 
@@ -150,6 +150,9 @@ def associate (dist):
             accumulate_list (mc, n_associations, coords)
 
     return ms, mc
+
+
+#------------------------------------
 
 read_sources ()
 #evaluate_kdtree ()
