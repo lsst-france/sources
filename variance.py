@@ -192,11 +192,11 @@ for date in trees:
 	    d = abs(c[i] - c0)/sec
 	    xs.append (d)
 
-        print s, len (c), c, fluxes[s]
+        #print s, len (c), c, fluxes[s]
 
 	x = fluxes[s]
 	y = np.mean (xs)
-        #print s, 'x=', x, 'y=', y
+        print s, 'x=', x, 'y=', y
 	i += 1
 	if i > 10:
             break
