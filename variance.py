@@ -179,7 +179,7 @@ for s in combined:
     #continue
     if not np.isnan (fluxes[s]):
         for r in combined[s]:
-            ax1.plot (np.var(combined[s]), fluxes[s], 'b.')
+            ax1.plot (np.mean(combined[s]), fluxes[s], 'b.')
 
 #ax1.legend()
 ax1.grid()
