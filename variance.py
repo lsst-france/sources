@@ -8,12 +8,12 @@ import os
 import math
 from scipy import spatial
 
-#where = '/workspace/LSST/data/08AL01/D3'
-where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
+where = '/workspace/LSST/data/08AL01/D3'
+# where = '/afs/in2p3.fr/home/l/lsstprod/data/DC2014/CFHTLS/output/src/08AL01/D3/'
 
 def file_pattern (date):
-    return '%s/r/*00.fits' % date
-    #return '%s/r/*.fits' % date
+    # return '%s/r/*00.fits' % date
+    return '%s/r/*.fits' % date
 
 os.chdir(where)
 
